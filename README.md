@@ -165,4 +165,34 @@ type BankKeeper interface {
 }
 ```
 
+また、Loan作成時に受け取ったMsgに問題ないかの検証を行う処理として、ValidateBasic()を更新する
 
+```go:
+func (msg *MsgRequestLoan) ValidateBasic() error {
+ _, err := sdk.AccAddressFromBech32(msg.Creator)
+
+ amount, err := sdk.ParseCoinsNormalized(msg.Amount)
+ fee, _ := sdk.ParseCoinsNormalized(msg.Fee)
+ collateral, _ := sdk.ParseCoinsNormalized(msg.Collateral)
+
+ if err != nil {
+  return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+ }
+ if !amount.IsValid() {
+  return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "amount is not valid Coins object")
+ }
+ if amount.Empty() {
+  return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "amount is empty")
+ }
+ if !fee.IsValid() {
+  return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "fee is not a valid Coins object")
+ }
+ if !collateral.IsValid() {
+  return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collateral is not a valid Coins object")
+ }
+ if collateral.Empty() {
+  return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collateral is empty")
+ }
+ return nil
+}
+```
