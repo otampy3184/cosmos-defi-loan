@@ -196,3 +196,147 @@ func (msg *MsgRequestLoan) ValidateBasic() error {
  return nil
 }
 ```
+
+以上でRequest Loanのmsg処理の作成は完了したので、ルートディレクトリでChainを立ち上げる
+
+```:
+ignite chain serve
+
+Cosmos SDK's version is: stargate - v0.45.4
+
+🛠️  Building proto...
+📦 Installing dependencies...
+🛠️  Building the blockchain...
+💿 Initializing the app...
+🙂 Created account "alice" with address "cosmos1zv0j5m07km934cr5xc7hvwa025dfm9dykrrflq" with mnemonic: "force rally noodle exist enemy empty pioneer buyer various autumn have mix sunny endorse chuckle famous travel common fragile balance coil vague boil pipe"
+🙂 Created account "bob" with address "cosmos1ax649dnyzktn49gf97yse9f00rn0hdmhednyzv" with mnemonic: "walk level attract side issue pill drift code survey clever dry torch hammer deer change crunch heavy tornado flee coconut carpet carry absent traffic"
+🌍 Tendermint node: http://0.0.0.0:26657
+🌍 Blockchain API: http://0.0.0.0:1317
+🌍 Token faucet: http://0.0.0.0:4500
+```
+
+別ターミナルを開き、トランザクションを送信してみる
+
+```:
+loand tx loan request-loan 100token 2token 200token 500 --from alice
+```
+
+成功すると下記のような結果が表示される
+
+```:
+{"body":{"messages":[{"@type":"/username.loan.loan.MsgRequestLoan","creator":"cosmos1zv0j5m07km934cr5xc7hvwa025dfm9dykrrflq","amount":"100token","fee":"2token","collateral":"200token","deadline":"500"}],"memo":"","timeout_height":"0","extension_options":[],"non_critical_extension_options":[]},"auth_info":{"signer_infos":[],"fee":{"amount":[],"gas_limit":"200000","payer":"","granter":""}},"signatures":[]}
+
+confirm transaction before signing and broadcasting [y/N]: y
+code: 0
+codespace: ""
+data: 0A240A222F757365726E616D652E6C6F616E2E6C6F616E2E4D7367526571756573744C6F616E
+events:
+- attributes:
+  - index: true
+    key: ZmVl
+    value: ""
+  type: tx
+- attributes:
+  - index: true
+    key: YWNjX3NlcQ==
+    value: Y29zbW9zMXp2MGo1bTA3a205MzRjcjV4YzdodndhMDI1ZGZtOWR5a3JyZmxxLzE=
+  type: tx
+- attributes:
+  - index: true
+    key: c2lnbmF0dXJl
+    value: UFEzMTZHY2czYXNLd1RDN3VTdlNJMmsvVnFQRXVkVFpQeHRwVmNFeDZwcGVyNUY4UGswckFUVjdCSnJTenFJalU2eUNoa1YxTTJYZHUwNzBlNk4yU0E9PQ==
+  type: tx
+- attributes:
+  - index: true
+    key: YWN0aW9u
+    value: cmVxdWVzdF9sb2Fu
+  type: message
+- attributes:
+  - index: true
+    key: c3BlbmRlcg==
+    value: Y29zbW9zMXp2MGo1bTA3a205MzRjcjV4YzdodndhMDI1ZGZtOWR5a3JyZmxx
+  - index: true
+    key: YW1vdW50
+    value: MjAwdG9rZW4=
+  type: coin_spent
+- attributes:
+  - index: true
+    key: cmVjZWl2ZXI=
+    value: Y29zbW9zMWd1NG03OXlqOGNoOGVtN2MyMnZ6dDNxcGFyZzY5eW1tNzVxZjZs
+  - index: true
+    key: YW1vdW50
+    value: MjAwdG9rZW4=
+  type: coin_received
+- attributes:
+  - index: true
+    key: cmVjaXBpZW50
+    value: Y29zbW9zMWd1NG03OXlqOGNoOGVtN2MyMnZ6dDNxcGFyZzY5eW1tNzVxZjZs
+  - index: true
+    key: c2VuZGVy
+    value: Y29zbW9zMXp2MGo1bTA3a205MzRjcjV4YzdodndhMDI1ZGZtOWR5a3JyZmxx
+  - index: true
+    key: YW1vdW50
+    value: MjAwdG9rZW4=
+  type: transfer
+- attributes:
+  - index: true
+    key: c2VuZGVy
+    value: Y29zbW9zMXp2MGo1bTA3a205MzRjcjV4YzdodndhMDI1ZGZtOWR5a3JyZmxx
+  type: message
+gas_used: "71449"
+gas_wanted: "200000"
+height: "50"
+info: ""
+logs:
+- events:
+  - attributes:
+    - key: receiver
+      value: cosmos1gu4m79yj8ch8em7c22vzt3qparg69ymm75qf6l
+    - key: amount
+      value: 200token
+    type: coin_received
+  - attributes:
+    - key: spender
+      value: cosmos1zv0j5m07km934cr5xc7hvwa025dfm9dykrrflq
+    - key: amount
+      value: 200token
+    type: coin_spent
+  - attributes:
+    - key: action
+      value: request_loan
+    - key: sender
+      value: cosmos1zv0j5m07km934cr5xc7hvwa025dfm9dykrrflq
+    type: message
+  - attributes:
+    - key: recipient
+      value: cosmos1gu4m79yj8ch8em7c22vzt3qparg69ymm75qf6l
+    - key: sender
+      value: cosmos1zv0j5m07km934cr5xc7hvwa025dfm9dykrrflq
+    - key: amount
+      value: 200token
+    type: transfer
+  log: ""
+  msg_index: 0
+raw_log: '[{"events":[{"type":"coin_received","attributes":[{"key":"receiver","value":"cosmos1gu4m79yj8ch8em7c22vzt3qparg69ymm75qf6l"},{"key":"amount","value":"200token"}]},{"type":"coin_spent","attributes":[{"key":"spender","value":"cosmos1zv0j5m07km934cr5xc7hvwa025dfm9dykrrflq"},{"key":"amount","value":"200token"}]},{"type":"message","attributes":[{"key":"action","value":"request_loan"},{"key":"sender","value":"cosmos1zv0j5m07km934cr5xc7hvwa025dfm9dykrrflq"}]},{"type":"transfer","attributes":[{"key":"recipient","value":"cosmos1gu4m79yj8ch8em7c22vzt3qparg69ymm75qf6l"},{"key":"sender","value":"cosmos1zv0j5m07km934cr5xc7hvwa025dfm9dykrrflq"},{"key":"amount","value":"200token"}]}]}]'
+timestamp: ""
+tx: null
+txhash: 47CEE7C04F600EB922CC8DB7D1FDB1C5B5B8EEA342A3D569F4EC7557283A13A3
+```
+
+さらに下記コマンドを実行することで作成したLoanの内容を確認できる
+
+```:
+loand query loan list-loan
+Loan:
+- amount: 100token
+  borrower: cosmos1zv0j5m07km934cr5xc7hvwa025dfm9dykrrflq
+  collateral: 200token
+  deadline: "500"
+  fee: 2token
+  id: "0"
+  lender: ""
+  state: requested
+pagination:
+  next_key: null
+  total: "0"
+```
