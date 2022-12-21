@@ -1,8 +1,10 @@
 # Cosmos SDK Loan Module
 
-CosmosSDKが提供してくれる必要なModule群を一括でIgniteCLIで用意する
+IgniteCLIが用意しているCosmosSDK Tutorialの[Advanced Module: DeFi Loan](https://docs.ignite.com/guide/loan)に従ってIBCでやり取りされるMsgの中身やKeeper処理などの理解を深める
 
 ## 初期設定
+
+CosmosSDKが提供してくれる必要なModule群を一括でIgniteCLIで用意する
 
 ```:
 ignite scaffold chain github.com/username/loan --no-module
