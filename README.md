@@ -396,3 +396,35 @@ func (k msgServer) ApproveLoan(goCtx context.Context, msg *types.MsgApproveLoan)
  return &types.MsgApproveLoanResponse{}, nil
 }
 ```
+
+BankModuleと繋げるため、BankKeeperにも必要なInterfaceを追加しておく
+
+```go:expected_keeper.go
+type BankKeeper interface {
+ SendCoinsFromAccountToModule(ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
+    // SendCoins(ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule sdk.AccAddress, amt sdk.Coins) error
+    // Tutorialには↑で書かれていたが、渡す引数からして↓が正しい？
+ SendCoins(ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule sdk.AccAddress, amt sdk.Coins) error
+}
+```
+
+また、Keeperで使っているエラーを使うため、typesのerror.goも編集する
+
+```go:error.go
+package types
+
+// DONTCOVER
+
+import (
+ sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+)
+
+// x/loan module sentinel errors
+var (
+ ErrSample = sdkerrors.Register(ModuleName, 1100, "sample error")
+)
+
+var (
+ ErrWrongLoanState = sdkerrors.Register(ModuleName, 1, "wrong loan state error")
+)
+```
