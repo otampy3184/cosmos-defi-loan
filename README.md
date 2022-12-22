@@ -33,7 +33,7 @@ ignite scaffold list loan amount fee collateral deadline state borrower lender -
 
 実行後、loan/proto/loan/loan.protoというファイルに、上のコマンドで指定した要素を持った型が定義されている
 
-```proto:
+```proto:loan/proto/loan/loan.proto
 syntax = "proto3";
 package username.loan.loan;
 
@@ -70,7 +70,7 @@ ignite scaffold message request-loan amount fee collateral deadline
 
 x/loan/keeper/msg_server_request_loan.goにrequrest_loanの関数が設定されている(以下初期状態)
 
-```go:
+```go:x/loan/keeper/msg_server_request_loan.go
 package keeper
 
 import (
@@ -94,7 +94,7 @@ func (k msgServer) RequestLoan(goCtx context.Context, msg *types.MsgRequestLoan)
 以下のように書き換えることで、新しくLoanを作成し、トランザクションが持っているmsgから情報を受け取り、stateをRequestedにする
 また、Borrowerのアドレスと担保とする資産の値を定義し、各アカウントの残高を管理しているbankモジュールに対して、borrowerの持つ資産をこのloanモジュールに対して送金させるう処理を実行させる
 
-```go:
+```go:x/loan/keeper/msg_server_request_loan.go
 package keeper
 
 import (
@@ -147,7 +147,7 @@ func (k msgServer) RequestLoan(goCtx context.Context, msg *types.MsgRequestLoan)
 
 また、k.bankKeeperでSendCoinsFromAccountToModuleを利用しているため、KeeperのInterfaceも更新する
 
-```go:
+```go:loan/x/loan/types/expected_keepers.go
 package types
 
 import (
@@ -169,7 +169,7 @@ type BankKeeper interface {
 
 また、Loan作成時に受け取ったMsgに問題ないかの検証を行う処理として、ValidateBasic()を更新する
 
-```go:
+```go:loan/x/loan/types/message_approve_loan.go
 func (msg *MsgRequestLoan) ValidateBasic() error {
  _, err := sdk.AccAddressFromBech32(msg.Creator)
 
