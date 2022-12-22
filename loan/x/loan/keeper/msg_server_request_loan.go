@@ -3,8 +3,8 @@ package keeper
 import (
 	"context"
 
-	"github.com/username/loan/x/loan/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/username/loan/x/loan/types"
 )
 
 func (k msgServer) RequestLoan(goCtx context.Context, msg *types.MsgRequestLoan) (*types.MsgRequestLoanResponse, error) {

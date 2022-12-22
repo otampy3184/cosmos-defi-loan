@@ -51411,6 +51411,8 @@ definitions:
         type: string
       lender:
         type: string
+  username.loan.loan.MsgApproveLoanResponse:
+    type: object
   username.loan.loan.MsgRequestLoanResponse:
     type: object
   username.loan.loan.Params:
