@@ -1,6 +1,6 @@
 # Cosmos SDK Loan Module
 
-IgniteCLIが用意しているCosmosSDK Tutorialの[Advanced Module: DeFi Loan](https://docs.ignite.com/guide/loan)に従ってIBCでやり取りされるMsgの中身やKeeper処理などの理解を深める
+IgniteCLIが用意しているCosmosSDK Tutorialの[Advanced Module: DeFi Loan](https://docs.ignite.com/guide/loan)を試し、IBCでやり取りされるMsgの中身やKeeper処理などの理解を深める
 
 ## 初期設定
 
@@ -341,4 +341,58 @@ Loan:
 pagination:
   next_key: null
   total: "0"
+```
+
+## Approve loan
+
+続いて作成したLoanをLender側が承認する処理を作成する
+igniteCLIにApproveLoan用のMsgを作成してもらう
+
+```:
+ignite scaffold message approve-loan id:uint
+```
+
+loanモジュールがApproveLoanMsgを受け取った時の処理をKeeper内に記述していく
+
+```go:x/loan/keeper/msg_server_approve_loan.go
+package keeper
+
+import (
+ "context"
+ "fmt"
+
+ "github.com/username/loan/x/loan/types"
+ sdk "github.com/cosmos/cosmos-sdk/types"
+ sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+)
+
+func (k msgServer) ApproveLoan(goCtx context.Context, msg *types.MsgApproveLoan) (*types.MsgApproveLoanResponse, error) {
+ ctx := sdk.UnwrapSDKContext(goCtx)
+
+ loan, found := k.GetLoan(ctx, msg.Id)
+ if !found {
+  return nil, sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "key %d doesn't exist", msg.Id)
+ }
+
+ // TODO: for some reason the error doesn't get printed to the terminal
+ if loan.State != "requested" {
+  return nil, sdkerrors.Wrapf(types.ErrWrongLoanState, "%v", loan.State)
+ }
+
+ lender, _ := sdk.AccAddressFromBech32(msg.Creator)
+ borrower, _ := sdk.AccAddressFromBech32(loan.Borrower)
+ amount, err := sdk.ParseCoinsNormalized(loan.Amount)
+ if err != nil {
+  return nil, sdkerrors.Wrap(types.ErrWrongLoanState, "Cannot parse coins in loan amount")
+ }
+
+ k.bankKeeper.SendCoins(ctx, lender, borrower, amount)
+
+ loan.Lender = msg.Creator
+ loan.State = "approved"
+
+ k.SetLoan(ctx, loan)
+
+ return &types.MsgApproveLoanResponse{}, nil
+}
 ```
