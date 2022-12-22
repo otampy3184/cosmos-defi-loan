@@ -29,8 +29,11 @@ func (k msgServer) ApproveLoan(goCtx context.Context, msg *types.MsgApproveLoan)
 	}
 
 	k.bankKeeper.SendCoins(ctx, lender, borrower, amount)
-	// TODO: Handling the message
-	_ = ctx
+
+	loan.Lender = msg.Creator
+	loan.State = "approved"
+
+	k.SetLoan(ctx, loan)
 
 	return &types.MsgApproveLoanResponse{}, nil
 }
