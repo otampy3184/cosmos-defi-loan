@@ -428,3 +428,138 @@ var (
  ErrWrongLoanState = sdkerrors.Register(ModuleName, 1, "wrong loan state error")
 )
 ```
+
+Request Loanで作った情報を一旦リセットするため-rオプションをつけてchainを立ち上げる
+
+```:
+ignite chain serve -r
+```
+
+改めてLoanを作成し、確認
+
+```:
+loand tx loan request-loan 100token 2token 200token 500 --from bob -y
+~~省略~~
+loand query loan list-loan
+~~省略("requested"のLoanが一つある)~~
+```
+
+続いて、AliceがLoanを承認するMsgを送信する
+
+```:
+loand tx loan approve-loan 0 --from alice -y
+code: 0
+codespace: ""
+data: 0A240A222F757365726E616D652E6C6F616E2E6C6F616E2E4D7367417070726F76654C6F616E
+events:
+- attributes:
+  - index: true
+    key: ZmVl
+    value: ""
+  type: tx
+- attributes:
+  - index: true
+    key: YWNjX3NlcQ==
+    value: Y29zbW9zMXJqNXdmbDhuY3NrcXk1bDlscXJxMzk5eTB1cnBxd3lqc2QydDNjLzE=
+  type: tx
+- attributes:
+  - index: true
+    key: c2lnbmF0dXJl
+    value: ckhLVWFuOERxSkRzcHd1NTYwa2E1Tk1PRmJhUUhRcExFWGN0d1IyTjZGOXpXTUtYclI4QWtaQzJKUmRIRGJtNzRqRG1PVHNwQkorb0dSdUFMKzdVZlE9PQ==
+  type: tx
+- attributes:
+  - index: true
+    key: YWN0aW9u
+    value: YXBwcm92ZV9sb2Fu
+  type: message
+- attributes:
+  - index: true
+    key: c3BlbmRlcg==
+    value: Y29zbW9zMXJqNXdmbDhuY3NrcXk1bDlscXJxMzk5eTB1cnBxd3lqc2QydDNj
+  - index: true
+    key: YW1vdW50
+    value: MTAwdG9rZW4=
+  type: coin_spent
+- attributes:
+  - index: true
+    key: cmVjZWl2ZXI=
+    value: Y29zbW9zMWFuNmt2a3M5bmE2NjdlNGVjYzJ6M3Q3NTlsc2t4dXRxNDdtbTlj
+  - index: true
+    key: YW1vdW50
+    value: MTAwdG9rZW4=
+  type: coin_received
+- attributes:
+  - index: true
+    key: cmVjaXBpZW50
+    value: Y29zbW9zMWFuNmt2a3M5bmE2NjdlNGVjYzJ6M3Q3NTlsc2t4dXRxNDdtbTlj
+  - index: true
+    key: c2VuZGVy
+    value: Y29zbW9zMXJqNXdmbDhuY3NrcXk1bDlscXJxMzk5eTB1cnBxd3lqc2QydDNj
+  - index: true
+    key: YW1vdW50
+    value: MTAwdG9rZW4=
+  type: transfer
+- attributes:
+  - index: true
+    key: c2VuZGVy
+    value: Y29zbW9zMXJqNXdmbDhuY3NrcXk1bDlscXJxMzk5eTB1cnBxd3lqc2QydDNj
+  type: message
+gas_used: "59285"
+gas_wanted: "200000"
+height: "13"
+info: ""
+logs:
+- events:
+  - attributes:
+    - key: receiver
+      value: cosmos1an6kvks9na667e4ecc2z3t759lskxutq47mm9c
+    - key: amount
+      value: 100token
+    type: coin_received
+  - attributes:
+    - key: spender
+      value: cosmos1rj5wfl8ncskqy5l9lqrq399y0urpqwyjsd2t3c
+    - key: amount
+      value: 100token
+    type: coin_spent
+  - attributes:
+    - key: action
+      value: approve_loan
+    - key: sender
+      value: cosmos1rj5wfl8ncskqy5l9lqrq399y0urpqwyjsd2t3c
+    type: message
+  - attributes:
+    - key: recipient
+      value: cosmos1an6kvks9na667e4ecc2z3t759lskxutq47mm9c
+    - key: sender
+      value: cosmos1rj5wfl8ncskqy5l9lqrq399y0urpqwyjsd2t3c
+    - key: amount
+      value: 100token
+    type: transfer
+  log: ""
+  msg_index: 0
+raw_log: '[{"events":[{"type":"coin_received","attributes":[{"key":"receiver","value":"cosmos1an6kvks9na667e4ecc2z3t759lskxutq47mm9c"},{"key":"amount","value":"100token"}]},{"type":"coin_spent","attributes":[{"key":"spender","value":"cosmos1rj5wfl8ncskqy5l9lqrq399y0urpqwyjsd2t3c"},{"key":"amount","value":"100token"}]},{"type":"message","attributes":[{"key":"action","value":"approve_loan"},{"key":"sender","value":"cosmos1rj5wfl8ncskqy5l9lqrq399y0urpqwyjsd2t3c"}]},{"type":"transfer","attributes":[{"key":"recipient","value":"cosmos1an6kvks9na667e4ecc2z3t759lskxutq47mm9c"},{"key":"sender","value":"cosmos1rj5wfl8ncskqy5l9lqrq399y0urpqwyjsd2t3c"},{"key":"amount","value":"100token"}]}]}]'
+timestamp: ""
+tx: null
+txhash: 88018E09620B78E56D85FB82D3C602C75814B41E4104B6D6F025AC57634FFEDC
+```
+
+再度クエリして確認すると、LoanのStateが”approved”になっている
+
+```:
+loand query loan list-loan 
+Loan:
+- amount: 100token
+  borrower: cosmos1an6kvks9na667e4ecc2z3t759lskxutq47mm9c
+  collateral: 200token
+  deadline: "500"
+  fee: 2token
+  id: "0"
+  lender: cosmos1rj5wfl8ncskqy5l9lqrq399y0urpqwyjsd2t3c
+  state: approved
+pagination:
+  next_key: null
+  total: "0"
+```
+
+以上でLenderがLoanに承認を行う部分は完了
