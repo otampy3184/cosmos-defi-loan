@@ -930,3 +930,123 @@ var (
 )
 
 ```
+
+chainを起動し、期限切れになるLoanを作成する(期限であるBlockheightを1にする)
+
+```:
+% ignite chain serve -r
+~~~~
+% loand tx loan request-loan 100token 2token 200token 1 --from bob -y
+~~~~
+%　loand query loan list-loan
+~~~~
+%　loand tx loan approve-loan 0 --from alice -y
+~~~~
+%　loand tx loan liquidate-loan 0 --from alice -y
+code: 0
+codespace: ""
+data: 0A260A242F757365726E616D652E6C6F616E2E6C6F616E2E4D73674C69717569646174654C6F616E
+events:
+- attributes:
+  - index: true
+    key: ZmVl
+    value: ""
+  type: tx
+- attributes:
+  - index: true
+    key: YWNjX3NlcQ==
+    value: Y29zbW9zMTI1Mmw3ZndxN3I0ZGwweGVxbHhtMzZhOXNlNXljOXN4czdrbm11LzI=
+  type: tx
+- attributes:
+  - index: true
+    key: c2lnbmF0dXJl
+    value: L01ZOXM1N2NEUTdlcGlvT213VGp5VE44Y1czVlExbUhjVXgvZjVNRHJqcG9nZmVFMjNSRmZiYVM0VUEzUkV5VjR3b29BeU5PcURjT1dDWFNRbVNyV2c9PQ==
+  type: tx
+- attributes:
+  - index: true
+    key: YWN0aW9u
+    value: bGlxdWlkYXRlX2xvYW4=
+  type: message
+- attributes:
+  - index: true
+    key: c3BlbmRlcg==
+    value: Y29zbW9zMWd1NG03OXlqOGNoOGVtN2MyMnZ6dDNxcGFyZzY5eW1tNzVxZjZs
+  - index: true
+    key: YW1vdW50
+    value: MjAwdG9rZW4=
+  type: coin_spent
+- attributes:
+  - index: true
+    key: cmVjZWl2ZXI=
+    value: Y29zbW9zMTI1Mmw3ZndxN3I0ZGwweGVxbHhtMzZhOXNlNXljOXN4czdrbm11
+  - index: true
+    key: YW1vdW50
+    value: MjAwdG9rZW4=
+  type: coin_received
+- attributes:
+  - index: true
+    key: cmVjaXBpZW50
+    value: Y29zbW9zMTI1Mmw3ZndxN3I0ZGwweGVxbHhtMzZhOXNlNXljOXN4czdrbm11
+  - index: true
+    key: c2VuZGVy
+    value: Y29zbW9zMWd1NG03OXlqOGNoOGVtN2MyMnZ6dDNxcGFyZzY5eW1tNzVxZjZs
+  - index: true
+    key: YW1vdW50
+    value: MjAwdG9rZW4=
+  type: transfer
+- attributes:
+  - index: true
+    key: c2VuZGVy
+    value: Y29zbW9zMWd1NG03OXlqOGNoOGVtN2MyMnZ6dDNxcGFyZzY5eW1tNzVxZjZs
+  type: message
+gas_used: "57123"
+gas_wanted: "200000"
+height: "72"
+info: ""
+logs:
+- events:
+  - attributes:
+    - key: receiver
+      value: cosmos1252l7fwq7r4dl0xeqlxm36a9se5yc9sxs7knmu
+    - key: amount
+      value: 200token
+    type: coin_received
+  - attributes:
+    - key: spender
+      value: cosmos1gu4m79yj8ch8em7c22vzt3qparg69ymm75qf6l
+    - key: amount
+      value: 200token
+    type: coin_spent
+  - attributes:
+    - key: action
+      value: liquidate_loan
+    - key: sender
+      value: cosmos1gu4m79yj8ch8em7c22vzt3qparg69ymm75qf6l
+    type: message
+  - attributes:
+    - key: recipient
+      value: cosmos1252l7fwq7r4dl0xeqlxm36a9se5yc9sxs7knmu
+    - key: sender
+      value: cosmos1gu4m79yj8ch8em7c22vzt3qparg69ymm75qf6l
+    - key: amount
+      value: 200token
+    type: transfer
+  log: ""
+  msg_index: 0
+raw_log: '[{"events":[{"type":"coin_received","attributes":[{"key":"receiver","value":"cosmos1252l7fwq7r4dl0xeqlxm36a9se5yc9sxs7knmu"},{"key":"amount","value":"200token"}]},{"type":"coin_spent","attributes":[{"key":"spender","value":"cosmos1gu4m79yj8ch8em7c22vzt3qparg69ymm75qf6l"},{"key":"amount","value":"200token"}]},{"type":"message","attributes":[{"key":"action","value":"liquidate_loan"},{"key":"sender","value":"cosmos1gu4m79yj8ch8em7c22vzt3qparg69ymm75qf6l"}]},{"type":"transfer","attributes":[{"key":"recipient","value":"cosmos1252l7fwq7r4dl0xeqlxm36a9se5yc9sxs7knmu"},{"key":"sender","value":"cosmos1gu4m79yj8ch8em7c22vzt3qparg69ymm75qf6l"},{"key":"amount","value":"200token"}]}]}]'
+timestamp: ""
+tx: null
+txhash: 5C67C2CC939963D34211C8C7B1220B20846A6F651868F0966CD598303331411E
+% loand query bank balances cosmos1252l7fwq7r4dl0xeqlxm36a9se5yc9sxs7knmu
+balances:
+- amount: "100000000"
+  denom: stake
+- amount: "20100"  <= 担保になっていた200tokenが入金されている
+  denom: token
+pagination:
+  next_key: null
+  total: "0"
+```
+
+以上で清算処理は完了
+
