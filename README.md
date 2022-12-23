@@ -7,19 +7,19 @@ IgniteCLIが用意しているCosmosSDK Tutorialの[Advanced Module: DeFi Loan](
 CosmosSDKが提供してくれる必要なModule群を一括でIgniteCLIで用意する
 
 ```:
-ignite scaffold chain github.com/username/loan --no-module
+% ignite scaffold chain github.com/username/loan --no-module
 ```
 
 loanに移動する
 
 ```;
-cd loan
+% cd loan
 ```
 
 モジュール作成のために必要なファイルを用意する
 
 ```;
-ignite scaffold module loan --dep bank
+% ignite scaffold module loan --dep bank
 ```
 
 上のコマンドを実行することで”loan”というモジュールを作成してくれる
@@ -28,7 +28,7 @@ ignite scaffold module loan --dep bank
 さらに”loan”モジュールがローンの情報を保存できるようにするため、以下のコマンドを実行する
 
 ```;
-ignite scaffold list loan amount fee collateral deadline state borrower lender --no-message
+% ignite scaffold list loan amount fee collateral deadline state borrower lender --no-message
 ```
 
 実行後、loan/proto/loan/loan.protoというファイルに、上のコマンドで指定した要素を持った型が定義されている
@@ -65,7 +65,7 @@ Messageの内容としては以下を用意する
 これらの要素を持つMessageの型をproto-buffで用意する
 
 ```;
-ignite scaffold message request-loan amount fee collateral deadline
+% ignite scaffold message request-loan amount fee collateral deadline
 ```
 
 x/loan/keeper/msg_server_request_loan.goにrequrest_loanの関数が設定されている(以下初期状態)
@@ -202,7 +202,7 @@ func (msg *MsgRequestLoan) ValidateBasic() error {
 以上でRequest Loanのmsg処理の作成は完了したので、ルートディレクトリでChainを立ち上げる
 
 ```:
-ignite chain serve
+% ignite chain serve
 
 Cosmos SDK's version is: stargate - v0.45.4
 
@@ -220,7 +220,7 @@ Cosmos SDK's version is: stargate - v0.45.4
 別ターミナルを開き、トランザクションを送信してみる
 
 ```:
-loand tx loan request-loan 100token 2token 200token 500 --from alice
+% loand tx loan request-loan 100token 2token 200token 500 --from alice
 ```
 
 成功すると下記のような結果が表示される
@@ -328,7 +328,7 @@ txhash: 47CEE7C04F600EB922CC8DB7D1FDB1C5B5B8EEA342A3D569F4EC7557283A13A3
 さらに下記コマンドを実行することで作成したLoanの内容を確認できる
 
 ```:
-loand query loan list-loan
+% loand query loan list-loan
 Loan:
 - amount: 100token
   borrower: cosmos1zv0j5m07km934cr5xc7hvwa025dfm9dykrrflq
@@ -349,7 +349,7 @@ pagination:
 igniteCLIにApproveLoan用のMsgを作成してもらう
 
 ```:
-ignite scaffold message approve-loan id:uint
+% ignite scaffold message approve-loan id:uint
 ```
 
 loanモジュールがApproveLoanMsgを受け取った時の処理をKeeper内に記述していく
@@ -432,22 +432,22 @@ var (
 Request Loanで作った情報を一旦リセットするため-rオプションをつけてchainを立ち上げる
 
 ```:
-ignite chain serve -r
+% ignite chain serve -r
 ```
 
 改めてLoanを作成し、確認
 
 ```:
-loand tx loan request-loan 100token 2token 200token 500 --from bob -y
-~~省略~~
-loand query loan list-loan
-~~省略("requested"のLoanが一つある)~~
+% loand tx loan request-loan 100token 2token 200token 500 --from bob -y
+~~~~
+% loand query loan list-loan
+~~("requested"のLoanが一つある)~~
 ```
 
 続いて、AliceがLoanを承認するMsgを送信する
 
 ```:
-loand tx loan approve-loan 0 --from alice -y
+% loand tx loan approve-loan 0 --from alice -y
 code: 0
 codespace: ""
 data: 0A240A222F757365726E616D652E6C6F616E2E6C6F616E2E4D7367417070726F76654C6F616E
@@ -547,7 +547,7 @@ txhash: 88018E09620B78E56D85FB82D3C602C75814B41E4104B6D6F025AC57634FFEDC
 再度クエリして確認すると、LoanのStateが”approved”になっている
 
 ```:
-loand query loan list-loan 
+% loand query loan list-loan 
 Loan:
 - amount: 100token
   borrower: cosmos1an6kvks9na667e4ecc2z3t759lskxutq47mm9c
