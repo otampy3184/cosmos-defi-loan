@@ -907,3 +907,26 @@ func (k msgServer) LiquidateLoan(goCtx context.Context, msg *types.MsgLiquidateL
  return &types.MsgLiquidateLoanResponse{}, nil
 }
 ```
+
+期限切れが起きていないLoanに対してMsgを送った時に発するError処理も追記しておく
+
+```go:
+package types
+
+// DONTCOVER
+
+import (
+ sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+)
+
+// x/loan module sentinel errors
+var (
+ ErrSample = sdkerrors.Register(ModuleName, 1100, "sample error")
+)
+
+var (
+ ErrWrongLoanState = sdkerrors.Register(ModuleName, 1, "wrong loan state error")
+ ErrDeadline       = sdkerrors.Register(ModuleName, 2, "deadline")
+)
+
+```
