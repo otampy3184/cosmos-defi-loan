@@ -570,6 +570,8 @@ BorrowerがLoanの返済を行い、担保を返してもらう部分の処理
 
 Msgを受け取った後のKeeper処理を更新していく(msg_server_repay_loan.go)
 
+処理の中身としては、①BorrwerがLenderにLoan返済を行う、②BorrowerがLenderに手数料を払う、③LenderがBorrowerに担保を返す
+
 ```go:msg_server_repay_loan.go
 package keeper
 
@@ -625,3 +627,220 @@ func (k msgServer) RepayLoan(goCtx context.Context, msg *types.MsgRepayLoan) (*t
  return &types.MsgRepayLoanResponse{}, nil
 }
 ```
+
+chainを起動し、取引を確認する
+
+```:
+% ignite chain serve -r
+~~~~
+% loand tx loan request-loan 100token 2token 200token 500 --from bob -y
+~~~~
+% loand query loan list-loan
+~~~~
+% loand tx loan approve-loan 0 --from alice -y
+~~~~
+% loand query bank balances <alice_address>
+~~~~
+% loand tx loan repay-loan 0 --from bob -y
+code: 0
+codespace: ""
+data: 0A220A202F757365726E616D652E6C6F616E2E6C6F616E2E4D736752657061794C6F616E
+events:
+- attributes:
+  - index: true
+    key: ZmVl
+    value: ""
+  type: tx
+- attributes:
+  - index: true
+    key: YWNjX3NlcQ==
+    value: Y29zbW9zMXVjN2tkeDVhOHFldWR3a2RrdDJnejI3c2Rja2VnOWVqbmQzMDgwLzE=
+  type: tx
+- attributes:
+  - index: true
+    key: c2lnbmF0dXJl
+    value: cTQ4VEtCVmh0RjBhOEpBaE92dmM4RXNFaEtWZ3VJYjhBd2loTUtQc1ZQQVdBb0FMVFp5TG9wejJyY24wQzNSeUNpWko4OFpPYjNZaTV4T2RYUUMwREE9PQ==
+  type: tx
+- attributes:
+  - index: true
+    key: YWN0aW9u
+    value: cmVwYXlfbG9hbg==
+  type: message
+- attributes:
+  - index: true
+    key: c3BlbmRlcg==
+    value: Y29zbW9zMXVjN2tkeDVhOHFldWR3a2RrdDJnejI3c2Rja2VnOWVqbmQzMDgw
+  - index: true
+    key: YW1vdW50
+    value: MTAwdG9rZW4=
+  type: coin_spent
+- attributes:
+  - index: true
+    key: cmVjZWl2ZXI=
+    value: Y29zbW9zMXVldmdrODlmOXJlbXg3ZzRydnEwdHBjcWUwNGZheXFtMnB4czB4
+  - index: true
+    key: YW1vdW50
+    value: MTAwdG9rZW4=
+  type: coin_received
+- attributes:
+  - index: true
+    key: cmVjaXBpZW50
+    value: Y29zbW9zMXVldmdrODlmOXJlbXg3ZzRydnEwdHBjcWUwNGZheXFtMnB4czB4
+  - index: true
+    key: c2VuZGVy
+    value: Y29zbW9zMXVjN2tkeDVhOHFldWR3a2RrdDJnejI3c2Rja2VnOWVqbmQzMDgw
+  - index: true
+    key: YW1vdW50
+    value: MTAwdG9rZW4=
+  type: transfer
+- attributes:
+  - index: true
+    key: c2VuZGVy
+    value: Y29zbW9zMXVjN2tkeDVhOHFldWR3a2RrdDJnejI3c2Rja2VnOWVqbmQzMDgw
+  type: message
+- attributes:
+  - index: true
+    key: c3BlbmRlcg==
+    value: Y29zbW9zMXVjN2tkeDVhOHFldWR3a2RrdDJnejI3c2Rja2VnOWVqbmQzMDgw
+  - index: true
+    key: YW1vdW50
+    value: MnRva2Vu
+  type: coin_spent
+- attributes:
+  - index: true
+    key: cmVjZWl2ZXI=
+    value: Y29zbW9zMXVldmdrODlmOXJlbXg3ZzRydnEwdHBjcWUwNGZheXFtMnB4czB4
+  - index: true
+    key: YW1vdW50
+    value: MnRva2Vu
+  type: coin_received
+- attributes:
+  - index: true
+    key: cmVjaXBpZW50
+    value: Y29zbW9zMXVldmdrODlmOXJlbXg3ZzRydnEwdHBjcWUwNGZheXFtMnB4czB4
+  - index: true
+    key: c2VuZGVy
+    value: Y29zbW9zMXVjN2tkeDVhOHFldWR3a2RrdDJnejI3c2Rja2VnOWVqbmQzMDgw
+  - index: true
+    key: YW1vdW50
+    value: MnRva2Vu
+  type: transfer
+- attributes:
+  - index: true
+    key: c2VuZGVy
+    value: Y29zbW9zMXVjN2tkeDVhOHFldWR3a2RrdDJnejI3c2Rja2VnOWVqbmQzMDgw
+  type: message
+- attributes:
+  - index: true
+    key: c3BlbmRlcg==
+    value: Y29zbW9zMWd1NG03OXlqOGNoOGVtN2MyMnZ6dDNxcGFyZzY5eW1tNzVxZjZs
+  - index: true
+    key: YW1vdW50
+    value: MjAwdG9rZW4=
+  type: coin_spent
+- attributes:
+  - index: true
+    key: cmVjZWl2ZXI=
+    value: Y29zbW9zMXVjN2tkeDVhOHFldWR3a2RrdDJnejI3c2Rja2VnOWVqbmQzMDgw
+  - index: true
+    key: YW1vdW50
+    value: MjAwdG9rZW4=
+  type: coin_received
+- attributes:
+  - index: true
+    key: cmVjaXBpZW50
+    value: Y29zbW9zMXVjN2tkeDVhOHFldWR3a2RrdDJnejI3c2Rja2VnOWVqbmQzMDgw
+  - index: true
+    key: c2VuZGVy
+    value: Y29zbW9zMWd1NG03OXlqOGNoOGVtN2MyMnZ6dDNxcGFyZzY5eW1tNzVxZjZs
+  - index: true
+    key: YW1vdW50
+    value: MjAwdG9rZW4=
+  type: transfer
+- attributes:
+  - index: true
+    key: c2VuZGVy
+    value: Y29zbW9zMWd1NG03OXlqOGNoOGVtN2MyMnZ6dDNxcGFyZzY5eW1tNzVxZjZs
+  type: message
+gas_used: "79542"
+gas_wanted: "200000"
+height: "96"
+info: ""
+logs:
+- events:
+  - attributes:
+    - key: receiver
+      value: cosmos1uevgk89f9remx7g4rvq0tpcqe04fayqm2pxs0x
+    - key: amount
+      value: 100token
+    - key: receiver
+      value: cosmos1uevgk89f9remx7g4rvq0tpcqe04fayqm2pxs0x
+    - key: amount
+      value: 2token
+    - key: receiver
+      value: cosmos1uc7kdx5a8qeudwkdkt2gz27sdckeg9ejnd3080
+    - key: amount
+      value: 200token
+    type: coin_received
+  - attributes:
+    - key: spender
+      value: cosmos1uc7kdx5a8qeudwkdkt2gz27sdckeg9ejnd3080
+    - key: amount
+      value: 100token
+    - key: spender
+      value: cosmos1uc7kdx5a8qeudwkdkt2gz27sdckeg9ejnd3080
+    - key: amount
+      value: 2token
+    - key: spender
+      value: cosmos1gu4m79yj8ch8em7c22vzt3qparg69ymm75qf6l
+    - key: amount
+      value: 200token
+    type: coin_spent
+  - attributes:
+    - key: action
+      value: repay_loan
+    - key: sender
+      value: cosmos1uc7kdx5a8qeudwkdkt2gz27sdckeg9ejnd3080
+    - key: sender
+      value: cosmos1uc7kdx5a8qeudwkdkt2gz27sdckeg9ejnd3080
+    - key: sender
+      value: cosmos1gu4m79yj8ch8em7c22vzt3qparg69ymm75qf6l
+    type: message
+  - attributes:
+    - key: recipient
+      value: cosmos1uevgk89f9remx7g4rvq0tpcqe04fayqm2pxs0x
+    - key: sender
+      value: cosmos1uc7kdx5a8qeudwkdkt2gz27sdckeg9ejnd3080
+    - key: amount
+      value: 100token
+    - key: recipient
+      value: cosmos1uevgk89f9remx7g4rvq0tpcqe04fayqm2pxs0x
+    - key: sender
+      value: cosmos1uc7kdx5a8qeudwkdkt2gz27sdckeg9ejnd3080
+    - key: amount
+      value: 2token
+    - key: recipient
+      value: cosmos1uc7kdx5a8qeudwkdkt2gz27sdckeg9ejnd3080
+    - key: sender
+      value: cosmos1gu4m79yj8ch8em7c22vzt3qparg69ymm75qf6l
+    - key: amount
+      value: 200token
+    type: transfer
+  log: ""
+  msg_index: 0
+raw_log: '[{"events":[{"type":"coin_received","attributes":[{"key":"receiver","value":"cosmos1uevgk89f9remx7g4rvq0tpcqe04fayqm2pxs0x"},{"key":"amount","value":"100token"},{"key":"receiver","value":"cosmos1uevgk89f9remx7g4rvq0tpcqe04fayqm2pxs0x"},{"key":"amount","value":"2token"},{"key":"receiver","value":"cosmos1uc7kdx5a8qeudwkdkt2gz27sdckeg9ejnd3080"},{"key":"amount","value":"200token"}]},{"type":"coin_spent","attributes":[{"key":"spender","value":"cosmos1uc7kdx5a8qeudwkdkt2gz27sdckeg9ejnd3080"},{"key":"amount","value":"100token"},{"key":"spender","value":"cosmos1uc7kdx5a8qeudwkdkt2gz27sdckeg9ejnd3080"},{"key":"amount","value":"2token"},{"key":"spender","value":"cosmos1gu4m79yj8ch8em7c22vzt3qparg69ymm75qf6l"},{"key":"amount","value":"200token"}]},{"type":"message","attributes":[{"key":"action","value":"repay_loan"},{"key":"sender","value":"cosmos1uc7kdx5a8qeudwkdkt2gz27sdckeg9ejnd3080"},{"key":"sender","value":"cosmos1uc7kdx5a8qeudwkdkt2gz27sdckeg9ejnd3080"},{"key":"sender","value":"cosmos1gu4m79yj8ch8em7c22vzt3qparg69ymm75qf6l"}]},{"type":"transfer","attributes":[{"key":"recipient","value":"cosmos1uevgk89f9remx7g4rvq0tpcqe04fayqm2pxs0x"},{"key":"sender","value":"cosmos1uc7kdx5a8qeudwkdkt2gz27sdckeg9ejnd3080"},{"key":"amount","value":"100token"},{"key":"recipient","value":"cosmos1uevgk89f9remx7g4rvq0tpcqe04fayqm2pxs0x"},{"key":"sender","value":"cosmos1uc7kdx5a8qeudwkdkt2gz27sdckeg9ejnd3080"},{"key":"amount","value":"2token"},{"key":"recipient","value":"cosmos1uc7kdx5a8qeudwkdkt2gz27sdckeg9ejnd3080"},{"key":"sender","value":"cosmos1gu4m79yj8ch8em7c22vzt3qparg69ymm75qf6l"},{"key":"amount","value":"200token"}]}]}]'
+timestamp: ""
+tx: null
+txhash: 39F86A4287341D2A3496527EC548A30807D6787071EE0082381BAA6AD78FD38D
+% loand query loan list-loan
+balances:
+- amount: "100000000"
+  denom: stake
+- amount: "20002"  <=== tokenのamountが元に戻っているだけでなく、手数料分も得ている
+  denom: token
+pagination:
+  next_key: null
+  total: "0"
+```
+
+以上でLoan返済処理は完了
