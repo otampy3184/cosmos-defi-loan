@@ -4,8 +4,8 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/username/loan/x/loan/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/username/loan/x/loan/types"
 )
 
 func (k msgServer) ApproveLoan(goCtx context.Context, msg *types.MsgApproveLoan) (*types.MsgApproveLoanResponse, error) {
@@ -20,7 +20,7 @@ func (k msgServer) ApproveLoan(goCtx context.Context, msg *types.MsgApproveLoan)
 		return nil, sdkerrors.Wrapf(types.ErrWrongLoanState, "%v", loan.State)
 	}
 
-	lender ,_ := sdk.AccAddressFromBech32(msg.Creator)
+	lender, _ := sdk.AccAddressFromBech32(msg.Creator)
 	borrower, _ := sdk.AccAddressFromBech32(loan.Borrower)
 	amount, err := sdk.ParseCoinsNormalized(loan.Amount)
 
