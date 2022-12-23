@@ -13,4 +13,5 @@ var (
 
 var (
 	ErrWrongLoanState = sdkerrors.Register(ModuleName, 1, "wrong loan state error")
+	ErrDeadline       = sdkerrors.Register(ModuleName, 2, "deadline")
 )
