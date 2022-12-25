@@ -1103,3 +1103,5 @@ func (k msgServer) CancelLoan(goCtx context.Context, msg *types.MsgCancelLoan) (
  return &types.MsgCancelLoanResponse{}, nil
 }
 ```
+
+以上で実装は完了
